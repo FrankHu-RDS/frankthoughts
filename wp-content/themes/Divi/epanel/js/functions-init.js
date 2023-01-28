@@ -1,8 +1,9 @@
 /* <![CDATA[ */
 	var clearpath = ePanelSettings.clearpath;
 
-	jQuery(document).ready(function($){
+	jQuery(function($){
 		var editors = [];
+		var caps    = ePanelSettings.allowedCaps;
 
 		function addEditorInstance(codeEditor, $element, config) {
 			if (!$element || $element.length === 0) {
@@ -13,6 +14,61 @@
 			} );
 			if (instance && instance.codemirror) {
 				editors.push(instance.codemirror);
+			}
+		}
+
+		// Add library buttons in code mirror editor.
+		function addLibraryButtons($codeMirrorWrap) {
+			var libraryBtnsHTML =
+				'<ul class="et-code-snippets-library-btns-wrap">' +
+					(caps.addLibrary ?
+					'<li class="et-code-snippets-btn snippet-add">' +
+						'<span class="add"></span>' +
+					'</li>' : '') +
+					(caps.saveLibrary ?
+					'<li class="et-code-snippets-btn snippet-save">' +
+						'<span class="save"></span>' +
+					'</li>' : '') +
+					(caps.portability ?
+					'<li class="et-code-snippets-btn snippet-portability">' +
+						'<span class="portability"></span>' +
+					'</li>' : '') +
+				'</ul>'
+			;
+
+			$codeMirrorWrap.prepend(libraryBtnsHTML);
+		}
+
+		// Extract the context form code mirror textarea.
+		function getCodeSnippetsContext(element) {
+			var areaForCSS = $(element).parents('.CodeMirror-wrap').siblings('textarea[id*=\'_custom_css\']');
+
+			return areaForCSS.length ? 'code_css' : 'code_html';
+		}
+
+		// Get the Code Mirror textarea id.
+		function getCodeMirrorId(element) {
+			var codeArea = $(element).parents('.CodeMirror').siblings('textarea');
+
+			return codeArea.attr('id');
+		}
+
+		// Add library buttons click event listeners.
+		function addLibraryButtonsClickEvent() {
+			$codeSnippetsBtnsWrap = $('.et-code-snippets-library-btns-wrap');
+
+			if ($codeSnippetsBtnsWrap.length) {
+				$codeSnippetsBtnsWrap.find('.add').parent().click(function(e) {
+					$(window).trigger('et_epanel_code_snippets_open_add_modal', [getCodeSnippetsContext(e.target), getCodeMirrorId(e.target)]);
+				});
+
+				$codeSnippetsBtnsWrap.find('.save').parent().click(function(e) {
+					$(window).trigger('et_epanel_code_snippets_open_save_modal', [getCodeSnippetsContext(e.target), getCodeMirrorId(e.target)]);
+				});
+
+				$codeSnippetsBtnsWrap.find('.portability').parent().click(function(e) {
+					$(window).trigger('et_epanel_code_snippets_open_portability_modal', [getCodeSnippetsContext(e.target), getCodeMirrorId(e.target)]);
+				});
 			}
 		}
 
@@ -43,6 +99,15 @@
 				addEditorInstance(codeEditor, $('#extra_integration_single_top'), configHTML);
 				addEditorInstance(codeEditor, $('#extra_integration_single_bottom'), configHTML);
 			}
+
+			// Code snippets area.
+			var $codeMirrorWrap  = $('#epanel-content').find('.CodeMirror-wrap');
+			var isSnippetAllowed = caps.addLibrary || caps.saveLibrary || caps.portability;
+
+			if ($codeMirrorWrap.length && isSnippetAllowed) {
+				addLibraryButtons($codeMirrorWrap);
+				addLibraryButtonsClickEvent();
+			}
 		}
 
 		var $palette_inputs = $( '.et_color_palette_main_input' );
@@ -62,7 +127,7 @@
 			}
 		});
 
-		$(".et-box-description").click(function(){
+		$('.et-box-description').on('click', function() {
 			var descheading = $(this).parent('.et-epanel-box').find(".et-box-title h3").html();
 			var desctext = $(this).parent('.et-epanel-box').find(".et-box-title .et-box-descr").html();
 
@@ -70,19 +135,19 @@
 
 			et_pb_center_modal( $( '.et-box-desc' ) );
 
-			$( '.et-lightbox-close' ).click( function() {
-				et_pb_close_modal( $( '#custom-lbox' ) );
+			$('.et-lightbox-close').on('click', function() {
+				et_pb_close_modal($('#custom-lbox'));
 			});
 		});
 
-		$(".et-defaults-button.epanel-reset").click(function(e) {
+		$('.et-defaults-button.epanel-reset').on('click', function(e) {
 			e.preventDefault();
 			$(".reset-popup-overlay, .defaults-hover").addClass('active');
 
 			et_pb_center_modal( $( '.defaults-hover' ) );
 		});
 
-		$( '.no' ).click( function() {
+		$('.no').on('click', function() {
 			et_pb_close_modal( $( '.reset-popup-overlay' ), 'no_remove' );
 
 			//clean the modal classes when animation complete
@@ -120,6 +185,33 @@
 					$checkbox.parents('.et-epanel-box').next().hide();
 				}
 			}
+
+			if ( 'divi_dynamic_css' === $checkbox.attr( 'id' ) || 'extra_dynamic_css' === $checkbox.attr( 'id' ) ) {
+				if ( ! value ) {
+					$checkbox.parents('.et-epanel-box').next().hide();
+					$checkbox.parents('.et-epanel-box').next().next().hide();
+				}
+			}
+
+			if ( 'divi_enable_jquery_body' === $checkbox.attr( 'id' ) || 'extra_enable_jquery_body' === $checkbox.attr( 'id' ) ) {
+				if ( ! value ) {
+					$checkbox.parents('.et-epanel-box').next().hide();
+					$checkbox.parents('.et-epanel-box').next().next().hide();
+				}
+			}
+
+			if ( 'divi_google_fonts_inline' === $checkbox.attr( 'id' ) || 'extra_google_fonts_inline' === $checkbox.attr( 'id' ) ) {
+				if ( ! value ) {
+					$checkbox.parents('.et-epanel-box').next().hide();
+				}
+			}
+
+			if ( 'divi_critical_css' === $checkbox.attr( 'id' ) || 'extra_critical_css' === $checkbox.attr( 'id' ) ) {
+				if ( ! value ) {
+					$checkbox.parents('.et-epanel-box').next().hide();
+				}
+			}
+
 		});
 
 		$('.et-box-content').on( 'click', '.et_pb_yes_no_button', function(e){
@@ -142,6 +234,42 @@
 				}
 			}
 
+			if ( 'divi_dynamic_css' === $checkbox.attr( 'id' ) || 'extra_dynamic_css' === $checkbox.attr( 'id' ) ) {
+				if ( $checkbox.is( ':checked' ) ) {
+					$box_content.parent().next().hide();
+					$box_content.parent().next().next().hide();
+				} else {
+					$box_content.parent().next().show();
+					$box_content.parent().next().next().show();
+				}
+			}
+
+			if ( 'divi_enable_jquery_body' === $checkbox.attr( 'id' ) || 'extra_enable_jquery_body' === $checkbox.attr( 'id' ) ) {
+				if ( $checkbox.is( ':checked' ) ) {
+					$box_content.parent().next().hide();
+					$box_content.parent().next().next().hide();
+				} else {
+					$box_content.parent().next().show();
+					$box_content.parent().next().next().show();
+				}
+			}
+
+			if ( 'divi_google_fonts_inline' === $checkbox.attr( 'id' ) || 'divi_google_fonts_inline' === $checkbox.attr( 'id' ) ) {
+				if ( $checkbox.is( ':checked' ) ) {
+					$box_content.parent().next().hide();
+				} else {
+					$box_content.parent().next().show();
+				}
+			}
+
+			if ( 'divi_critical_css' === $checkbox.attr( 'id' ) || 'extra_critical_css' === $checkbox.attr( 'id' ) ) {
+				if ( $checkbox.is( ':checked' ) ) {
+					$box_content.parent().next().hide();
+				} else {
+					$box_content.parent().next().show();
+				}
+			}
+
 			$state.toggleClass('et_pb_on_state et_pb_off_state');
 
 			if ( $checkbox.is(':checked' ) ) {
@@ -154,13 +282,13 @@
 
 		var $save_message = $("#epanel-ajax-saving");
 
-		$('#epanel-save-top').click(function(e){
+		$('#epanel-save-top').on('click', function(e) {
 			e.preventDefault();
 
 			$('#epanel-save').trigger('click');
 		})
 
-		$('#epanel-save').click(function(){
+		$('#epanel-save').on('click', function() {
 			epanel_save( false, true );
 			return false;
 		});
@@ -200,7 +328,7 @@
 						},500);
 					}
 
-					if ( $.isFunction( callback ) ) {
+					if ( 'function' === typeof callback ) {
 						callback();
 					}
 				}
@@ -233,7 +361,7 @@
 						}, 500 );
 					}
 
-					if ( $.isFunction( callback ) ) {
+					if ( 'function' === typeof callback ) {
 						callback();
 					}
 				}
@@ -312,8 +440,8 @@
 		}
 
 		function et_pb_center_modal( $modal ) {
-			var modal_height = $modal.outerHeight(),
-				modal_height_adjustment = 0 - ( modal_height / 2 );
+			var modal_height = $modal.outerHeight();
+			var modal_height_adjustment = (0 - (modal_height / 2)) + 'px';
 
 			$modal.css({
 				top : '50%',
@@ -322,5 +450,79 @@
 			});
 		}
 
+		/* eslint-disable prefer-arrow-callback, space-before-blocks */
+		$(window).on('et_epanel_code_snippets_open_add_modal', (event, context, codeMirrorId) => {
+			// Used for the App and Modal container.
+			$('body').first().append('<div id="et-code-snippets-container" class="snippets-modals-portal"></div>');
+
+			var preferences = {
+				containerId: 'et-code-snippets-container',
+				context,
+				codeMirrorId,
+				modalType: 'add',
+				sidebarLabel: 'code_html' === context ? ePanelSettings.i18n['Code Snippet'] : '',
+			};
+			var container   = window.document;
+
+			$(window).trigger('et_code_snippets_container_ready', [preferences, container]);
+		});
+		/* eslint-enable */
+
+		/* eslint-disable prefer-arrow-callback, space-before-blocks */
+		$(window).on('et_epanel_code_snippets_open_save_modal', (event, context, codeMirrorId) => {
+			// Used for the App and Modal container.
+			$('body').first().append('<div id="et-code-snippets-container" class="snippets-modals-portal"></div>');
+
+			var editor = jQuery(`#${codeMirrorId}`).next('.CodeMirror')[0].CodeMirror;
+			var content  =  editor.getValue();
+
+			if ('' === content) {
+				return;
+			}
+
+			var preferences = {
+				containerId: 'et-code-snippets-container',
+				context,
+				codeMirrorId,
+				modalType: 'save',
+				content: content,
+				selectedContent: editor.getSelection()
+			};
+			var container   = window.document;
+
+			$(window).trigger('et_code_snippets_container_ready', [preferences, container]);
+		});
+		/* eslint-enable */
+
+		/* eslint-disable prefer-arrow-callback, space-before-blocks */
+		$(window).on('et_epanel_code_snippets_open_portability_modal', (event, context, codeMirrorId) => {
+			// Used for the App and Modal container.
+			$('body').first().append('<div id="et-code-snippets-container" class="snippets-modals-portal"></div>');
+
+			var editor = jQuery(`#${codeMirrorId}`).next('.CodeMirror')[0].CodeMirror;
+
+			var preferences = {
+				containerId: 'et-code-snippets-container',
+				context,
+				codeMirrorId,
+				modalType: 'portability',
+				content: editor.getValue()
+			};
+			var container   = window.document;
+
+			$(window).trigger('et_code_snippets_container_ready', [preferences, container]);
+		});
+
+		$(document).on('mouseover', '.et-code-snippets-btn.snippet-save', function() {
+			var codeMirrorId = getCodeMirrorId(this);
+			var editor       = jQuery(`#${codeMirrorId}`).next('.CodeMirror')[0].CodeMirror;
+			var content      = editor.getValue();
+
+			if ('' === content) {
+				$(this).addClass('et-code-snippets-btn--disabled');
+			} else {
+				$(this).removeClass('et-code-snippets-btn--disabled');
+			}
+		});
 	});
 /* ]]> */
