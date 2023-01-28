@@ -65,11 +65,11 @@ h1#epanel-title {font-weight: 600;font-size: 18px;color: #fff;background-color: 
 #epanel-content .et-panel-box__checkbox-list-label {display: block;margin-bottom: 5px;font-weight: bold;}
 #epanel-content .et-epanel-box .et-box-content input, #epanel-content .et-epanel-box .et-box-content .et-upload-buttons {vertical-align: top;float: left;}
 .rtl #epanel-content .et-epanel-box .et-box-content input, .rtl #epanel-content .et-epanel-box .et-box-content .et-upload-buttons {float: right;}
-.et-epanel-box select, .et-epanel-box input[type="text"], .et-epanel-box input[type="password"], .et-epanel-box textarea {margin-left: 0;border-radius: 3px;border: none;box-shadow: none;background: #f1f5f9;padding: 13px;font-size: 13px;color: #4c5866;height: auto;width: auto;width: 100%;font-family: "Open Sans",sans-serif;margin-bottom: 0;-webkit-transition: background .5s;-moz-transition: background .5s;transition: background .5s;font-weight: 600;}
+.et-epanel-box select, .et-epanel-box input[type="text"], .et-epanel-box input[type="password"], .et-epanel-box textarea {margin-left: 0;border-radius: 3px;border: none;box-shadow: none;background-color: #f1f5f9;padding: 13px;font-size: 13px;color: #4c5866;height: auto;width: auto;width: 100%;font-family: "Open Sans",sans-serif;margin-bottom: 0;-webkit-transition: background .5s;-moz-transition: background .5s;transition: background .5s;font-weight: 600;}
 .et-epanel-box select {padding: 5px 13px;}
 .et-epanel-box input[type="text"]:focus, .et-epanel-box input[type="password"]:focus, .et-epanel-box textarea:focus {background: #e6ecf2;}
 .et-epanel-box select, .et-epanel-box input[type="text"], .et-epanel-box input[type="password"] {height: 30px;}
-.et-epanel-box select {width: 55%;}
+.et-epanel-box select {width: 55%;line-height: 21px;}
 input.et-checkbox.yes_no_button {display: none;}
 #epanel .et_pb_yes_no_button {width: 100%;display: inline-block;position: relative;cursor: pointer;-moz-transition: all .3s;-webkit-transition: all .3s;transition: all .3s;-webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px;font-size: 12px;}
 #epanel .et_pb_yes_no_button.et_pb_off_state {background-color: #f1f5f9;}
@@ -234,6 +234,7 @@ input.et-checkbox.yes_no_button {display: none;}
 .et-box-content .colorpalette-colorpicker.active {display: block;}
 .et-box-content .wp-picker-holder {margin-top: 50px;}
 .et-box-content input.input-colorpalette-colorpicker.wp-color-picker {display: block !important;width: 316px !important;}
+.et-box-content .iris-picker .iris-strip {margin-left: 9px !important;}
 .et-clearfix {clear: both;}
 #epanel-header .epanel-portability {right: 50px;}
 .rtl #epanel-header .epanel-portability {right: auto;left: 50px;}
@@ -302,7 +303,7 @@ input.et-checkbox.yes_no_button {display: none;}
 	#epanel-content .et-epanel-box-small-1 .et-box-content, #epanel-content .et-epanel-box-small-2 .et-box-content {max-width: 90%;width: 90%;}
 	.et-epanel-box select {max-width: 100%;width: 100%;}
 	#epanel .et-epanel-box .et-box-description {right: 0;top: 49px;}}
-#epanel .CodeMirror {padding: 13px 13px 13px 0px;border-radius: 3px;}
+#epanel .CodeMirror {padding: 0 13px 13px 0px;border-radius: 3px;}
 #epanel .CodeMirror-dialog-top {background: #f1f5f9;border-bottom: none;box-shadow: 0 0 50px rgba(0,0,0,.5);height: 30px;}
 #epanel .CodeMirror-search-label {color: #bec9d6;font-size: .875rem;height: 30px;line-height: 30px;}
 #epanel .CodeMirror-search-field {color: #4c5866 !important;font-size: .8rem !important;height: 30px;float: none !important;background: none;}
@@ -338,4 +339,18 @@ input.et-checkbox.yes_no_button {display: none;}
 #epanel .CodeMirror .codemirror-lint-warning {color: #fe9c47;border-color: #fe9c47;}
 #epanel .CodeMirror .codemirror-colorview {border: 1px solid #fff;border-radius: 10px;margin: 0px 5px 0 0;}
 #epanel .CodeMirror .codemirror-colorview .codemirror-colorview-background {border-radius: 10px;}
+#epanel .CodeMirror-vscrollbar::-webkit-scrollbar {width: 10px;cursor: initial;top: 34px;}
+#epanel .CodeMirror-vscrollbar::-webkit-scrollbar-thumb {background: #67737f !important;border-radius: 3px;border-right: 3px solid #4c5866;border-left: 3px solid #4c5866;}
+#epanel .CodeMirror-vscrollbar {top: 34px;}
+#epanel .CodeMirror-sizer {padding-bottom: 34px !important;}
+.et-code-snippets-open {overflow: hidden;margin-right: 15px;}
+.et-code-snippets-library-btns-wrap {align-items: center;border-bottom-left-radius: 3px;border-bottom-right-radius: 3px;display: flex;height: 34px;justify-content: flex-end;width: 100%;}
+.et-code-snippets-btn {border-radius: 3px;height: 28px;line-height: 28px;list-style: none;margin: auto 1px;text-align: center;width: 28px;}
+.et-code-snippets-btn:hover:not(.et-code-snippets-btn--disabled) {background: rgba(255,255,255,.16);cursor: pointer;}
+.et-code-snippets-btn span::after {color: #fff;font-family: "CodeSnippet";-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;}
+.et-code-snippets-btn.snippet-add span::after {content: "";font-size: 12px;}
+.et-code-snippets-btn.snippet-save span::after {content: "";font-size: 14px;}
+.et-code-snippets-btn.snippet-portability span::after {font-family: "ETmodules";}
+.et-code-snippets-btn .portability::after {content: "";font-size: 14px;}
+.et-code-snippets-btn--disabled {cursor: not-allowed;}
 @media only screen and ( max-width: 415px ) {.defaults-hover {width: auto;left: 25px;right: 25px;margin-left: 0;}}
